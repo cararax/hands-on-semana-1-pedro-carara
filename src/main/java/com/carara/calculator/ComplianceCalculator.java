@@ -1,5 +1,6 @@
 package com.carara.calculator;
 
+import com.carara.model.Conformidade;
 import com.carara.model.Faturamento;
 import com.carara.model.Nota;
 
@@ -9,85 +10,34 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.carara.reader.FileReader.*;
+import static com.carara.reader.FileReader.faturamentoReader;
+import static com.carara.reader.FileReader.notaReader;
 
 public class ComplianceCalculator {
-
-//    public static void complianceCalculator(List<Faturamento> faturamentoList, List<Nota> notaList) throws IOException {
-//
-//        faturamentoReader(faturamentoList);
-//
-//        List<String> complianceList = new ArrayList<>();
-//
-//        for(Faturamento faturamento : faturamentoList){
-//            for(Nota nota : notaList){
-//                if(faturamento.getCompany().equals(nota.getCompany())){
-//                    if(faturamento.getAno() == nota.getAno()){
-//                        if(faturamento.getMes() == nota.getMes()){
-//                            if(faturamento.valorTotalParcelas().compareTo(nota.getValor()) == 0){
-//                                complianceList.add(faturamento.getCompany() + ";" + faturamento.getAno() + ";" + faturamento.getMes() + ";" + "OK");
-//                            } else {
-//                                complianceList.add(faturamento.getCompany() + ";" + faturamento.getAno() + ";" + faturamento.getMes() + ";" + "NOK");
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        try(BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/compliance.txt"))) {
-//            writer.write("Empresa;Ano;Mês;Compliance");
-//            writer.newLine();
-//            for(String compliance : complianceList){
-//                writer.write(compliance);
-//                writer.newLine();
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
+    public static final String exportPath = "src/export/";
 
 
-    public static void calculateComliance(List<Faturamento> faturamentoList, List<Nota> notaList) throws IOException {
+    public static void calculateCompliance(Integer referenceYear) throws IOException {
+        List<Conformidade> empresasConformidade = new ArrayList<>();
+        List<Conformidade> empresasNaoConformidade = new ArrayList<>();
 
-//        List<Nota> notaList = new ArrayList<>();
-//        List<Faturamento> faturamentoList = new ArrayList<>();
-        List<String> empresas = new ArrayList<>();
+        List<Faturamento> faturamentoList = faturamentoReader(referenceYear);
+        List<Nota> notaList = notaReader(referenceYear);
 
-//        faturamentoList = faturamentoReader(faturamentoList, 2022);
-//        notaList = notaReader(notaList, 2022);
-        empresas = faturamentoList.stream().map(Faturamento::getCompany).toList();
-
-
-//        try(
-//                BufferedWriter writerConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmConformidade.txt")))
-//
-//                BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmNaoConformidade.txt"))
-//
-//                }
-        BufferedWriter writerConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmConformidade.txt"));
-        writerConformidade.write("Empresa;Conformidade;");
-        writerConformidade.newLine();
-
-        BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmNaoConformidade.txt"));
-        writerNaoConformidade.write("Empresa;Conformidade;");
-        writerNaoConformidade.newLine();
-
+        List<String> empresas = faturamentoList.stream().map(Faturamento::getCompany).toList();
 
         for (String empresa : empresas) {
             BigDecimal valorTotalFaturamento = BigDecimal.ZERO;
             BigDecimal valorTotalNotas = BigDecimal.ZERO;
-//                var listaFaturamentos = faturamentos.get(empresa);
-            var faturamentoListByCompany = faturamentoList.stream()
-                    .filter(f -> f.getCompany().equals(empresa))
-                    .collect(Collectors.toList());
 
-            var notasByCompany = notaList.stream()
+            List<Faturamento> faturamentoListByCompany = faturamentoList.stream()
+                    .filter(f -> f.getCompany().equals(empresa))
+                    .toList();
+
+            List<Nota> notasByCompany = notaList.stream()
                     .filter(n -> n.getCompany().equals(empresa))
-                    .collect(Collectors.toList());
-            ;
+                    .toList();
 
             if (!faturamentoListByCompany.isEmpty() && !notasByCompany.isEmpty()) {
                 for (Faturamento faturmento : faturamentoListByCompany) {
@@ -99,17 +49,31 @@ public class ComplianceCalculator {
             }
 
             if (valorTotalNotas.equals(valorTotalFaturamento)) {
-                writerConformidade.write( empresa + "; EM CONFORMIDADE;");
-                writerConformidade.newLine();
-
+                empresasConformidade.add(new Conformidade(empresa, "EM CONFORMIDADE"));
             } else {
-                writerNaoConformidade.write(empresa + "; EM NÃO CONFORMIDADE;");
-                writerNaoConformidade.newLine();
-
+                empresasNaoConformidade.add(new Conformidade(empresa, "EM CONFORMIDADE"));
             }
         }
-//        } catch (Exception e) {
-//            throw new IOException(e);
-//        }
+        printToFile(empresasConformidade, empresasNaoConformidade, String.valueOf(referenceYear));
+    }
+
+    private static void printToFile(List<Conformidade> empresasConformidade, List<Conformidade> empresasNaoConformidade, String referenceYear) throws IOException {
+        BufferedWriter writerConformidade = new BufferedWriter(new FileWriter(exportPath + "EmpresasEmConformidade"+referenceYear+".txt"));
+        writerConformidade.write("Empresa;Conformidade;");
+        writerConformidade.newLine();
+
+        for (Conformidade conformidade : empresasConformidade) {
+            writerConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidade() + ";");
+            writerConformidade.newLine();
+        }
+
+        BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(exportPath + "EmpresasEmNaoConformidade"+referenceYear+".txt"));
+        writerNaoConformidade.write("Empresa;Conformidade;");
+        writerNaoConformidade.newLine();
+
+        for (Conformidade conformidade : empresasNaoConformidade) {
+            writerConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidade() + ";");
+            writerConformidade.newLine();
+        }
     }
 }
