@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class FileReader {
     public static final String basePath = "src/main/resources/";
 
-    public static List<Faturamento> faturamentoReader(List<Faturamento> faturamentoList) throws IOException {
+    public static List<Faturamento> faturamentoReader(List<Faturamento> faturamentoList, Integer referenceYear) throws IOException {
         //metodo de leitura de faturamento, adicionar filtro por ano
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(basePath + "faturamento.txt"))) {
 
@@ -25,20 +25,21 @@ public class FileReader {
 //            String linha;
             for (String line : linha) {
                 dados = line.split(";");
-                String company = dados[0];
-                String mes = dados[1];
-                String ano = dados[2];
-                String dataParcela1 = dados[3];
-                String parcela1 = dados[4];
-                String dataParcela2 = dados[5];
-                String parcela2 = dados[6];
-                String dataParcela3 = dados[7];
-                String parcela3 = dados[8];
+                if (Integer.parseInt(dados[2]) == referenceYear) {
+                    String company = dados[0];
+                    String mes = dados[1];
+                    String ano = dados[2];
+                    String dataParcela1 = dados[3];
+                    String parcela1 = dados[4];
+                    String dataParcela2 = dados[5];
+                    String parcela2 = dados[6];
+                    String dataParcela3 = dados[7];
+                    String parcela3 = dados[8];
 
-                Faturamento faturamento = new Faturamento(company, mes, ano, dataParcela1, parcela1, dataParcela2,
-                        parcela2, dataParcela3, parcela3);
-                faturamentoList.add(faturamento);
-
+                    Faturamento faturamento = new Faturamento(company, mes, ano, dataParcela1, parcela1, dataParcela2,
+                            parcela2, dataParcela3, parcela3);
+                    faturamentoList.add(faturamento);
+                }
 //                return faturamentoList.stream().collect(Collectors.groupingBy(Faturamento::getCompany)).values().stream().flatMap(List::stream).collect(Collectors.toList());
             }
 
@@ -48,7 +49,7 @@ public class FileReader {
         return faturamentoList.stream().collect(Collectors.groupingBy(Faturamento::getCompany)).values().stream().flatMap(List::stream).collect(Collectors.toList());
     }
 
-    public static List<Nota> notaReader(List<Nota> notaList) throws IOException {
+    public static List<Nota> notaReader(List<Nota> notaList, Integer referenceYear) throws IOException {
         //metodo de leitura de faturamento, adicionar filtro por ano
         //metodo de leitura de faturamento, adicionar filtro por ano
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(basePath + "nota.txt"))) {
@@ -63,6 +64,7 @@ public class FileReader {
             for (String line : linha) {
                 /*String[]*/
                 dados = line.split(";");
+                if(Integer.parseInt(dados[2]) == referenceYear) {
                 String company = dados[0];
                 String mes = dados[1];
                 String ano = dados[2];
@@ -73,6 +75,8 @@ public class FileReader {
 
                 Nota nota = new Nota(company, mes, ano, valor, dataEmissao, numeroNota);
                 notaList.add(nota);
+                }
+
 //                return notaList.stream().collect(Collectors.groupingBy(Nota::getCompany));
 //                return notaList.stream().collect(Collectors.groupingBy(Nota::getCompany)).values().stream().flatMap(List::stream).collect(Collectors.toList());
 

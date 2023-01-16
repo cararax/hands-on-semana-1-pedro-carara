@@ -33,6 +33,10 @@ public class Faturamento {
         this.parcela3 = BigDecimal.valueOf(parseNumber(parcela3));
     }
 
+    public BigDecimal getValorTotalParcelas() {
+        return getParcela1().add(getParcela2()).add(getParcela3());
+    }
+
     public String getCompany() {
         return company;
     }
