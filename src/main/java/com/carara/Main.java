@@ -19,7 +19,6 @@ public class Main {
                 if (referenceYear > 2022) {
                     System.out.println("Ano fiscal de referencia invalido");
                 } else {
-                    calculateCompliance(referenceYear);
                     System.out.println("Relatorio gerado e disponível na pasta export.");
                 }
                 System.out.println("Deseja gerar o relatório novamente? SIM ou NAO");

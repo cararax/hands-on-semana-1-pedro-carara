@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.carara.reader.FileReader.faturamentoReader;
-import static com.carara.reader.FileReader.notaReader;
+import static com.carara.reader.FileReader.*;
+import static com.carara.reader.FileReader.basePath;
 
 public class ComplianceCalculator {
-    public static final String exportPath = "src/export/";
+    public static final String basePath = "src/export/";
 
 
     public static void calculateCompliance(Integer referenceYear) throws IOException {
@@ -58,7 +58,7 @@ public class ComplianceCalculator {
     }
 
     private static void printToFile(List<Conformidade> empresasConformidade, List<Conformidade> empresasNaoConformidade, String referenceYear) throws IOException {
-        BufferedWriter writerConformidade = new BufferedWriter(new FileWriter(exportPath + "EmpresasEmConformidade"+referenceYear+".txt"));
+        BufferedWriter writerConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmConformidade"+referenceYear+".txt"));
         writerConformidade.write("Empresa;Conformidade;");
         writerConformidade.newLine();
 
@@ -67,7 +67,7 @@ public class ComplianceCalculator {
             writerConformidade.newLine();
         }
 
-        BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(exportPath + "EmpresasEmNaoConformidade"+referenceYear+".txt"));
+        BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmNaoConformidade"+referenceYear+".txt"));
         writerNaoConformidade.write("Empresa;Conformidade;");
         writerNaoConformidade.newLine();
 
