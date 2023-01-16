@@ -11,15 +11,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileReader {
-    public static final String basePath = "src/main/resources/";
+    public static final String BASE_PATH = "src/main/resources/";
 
-    public static List<Faturamento> faturamentoReader(Integer referenceYear)
-            throws IOException {
+    private FileReader() {
+    }
+
+    public static List<Faturamento> faturamentoReader(Integer referenceYear) {
 
         List<Faturamento> faturamentoList = new ArrayList<>();
 
         try (BufferedReader reader =
-                     new BufferedReader(new java.io.FileReader(basePath + "faturamento.txt"))) {
+                     new BufferedReader(new java.io.FileReader(BASE_PATH + "faturamento.txt"))) {
 
             var linha = reader.lines().filter(l -> !l.isEmpty()).toList();
             linha = linha.subList(1, linha.size());
@@ -47,15 +49,14 @@ public class FileReader {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-
-        return faturamentoList.stream().collect(Collectors.groupingBy(Faturamento::getCompany)).values().stream().flatMap(List::stream).collect(Collectors.toList());
+        return faturamentoList.stream().collect(Collectors.groupingBy(Faturamento::getCompany)).values().stream().flatMap(List::stream).toList();
     }
 
-    public static List<Nota> notaReader(Integer referenceYear) throws IOException {
+    public static List<Nota> notaReader(Integer referenceYear) {
 
         List<Nota> notaList = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new java.io.FileReader(basePath + "nota.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new java.io.FileReader(BASE_PATH + "nota.txt"))) {
 
             var linha = reader.lines().filter(l -> !l.isEmpty()).toList();
             linha = linha.subList(1, linha.size());
@@ -79,6 +80,6 @@ public class FileReader {
             e.printStackTrace();
         }
 
-        return notaList.stream().collect(Collectors.groupingBy(Nota::getCompany)).values().stream().flatMap(List::stream).collect(Collectors.toList());
+        return notaList.stream().collect(Collectors.groupingBy(Nota::getCompany)).values().stream().flatMap(List::stream).toList();
     }
 }

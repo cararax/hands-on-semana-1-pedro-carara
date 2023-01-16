@@ -1,10 +1,11 @@
 package com.carara.model;
 
+import com.carara.util.DateUtil;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 
-import static com.carara.util.DateUtil.dateFormat;
 import static com.carara.util.NumberUtil.parseNumber;
 
 public class Nota {
@@ -22,7 +23,7 @@ public class Nota {
         this.mes = Integer.valueOf(mes);
         this.ano = Integer.valueOf(ano);
         this.valor = BigDecimal.valueOf(parseNumber(valor));
-        this.dataEmissao = dateFormat.parse(dataEmissao);
+        this.dataEmissao = DateUtil.getDateFormat().parse(dataEmissao);
         this.numeroNota = Integer.valueOf(numeroNota);
     }
 
@@ -56,21 +57,5 @@ public class Nota {
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
-    }
-
-    public Date getDataEmissao() {
-        return dataEmissao;
-    }
-
-    public void setDataEmissao(Date dataEmissao) {
-        this.dataEmissao = dataEmissao;
-    }
-
-    public int getNumeroNota() {
-        return numeroNota;
-    }
-
-    public void setNumeroNota(int numeroNota) {
-        this.numeroNota = numeroNota;
     }
 }

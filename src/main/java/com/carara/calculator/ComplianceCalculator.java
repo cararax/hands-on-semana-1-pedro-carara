@@ -11,12 +11,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.carara.reader.FileReader.*;
-import static com.carara.reader.FileReader.basePath;
+import static com.carara.reader.FileReader.faturamentoReader;
+import static com.carara.reader.FileReader.notaReader;
 
 public class ComplianceCalculator {
-    public static final String basePath = "src/export/";
+    public static final String EXPORT_PATH = "src/export/";
 
+    private ComplianceCalculator() {
+    }
 
     public static void calculateCompliance(Integer referenceYear) throws IOException {
         List<Conformidade> empresasConformidade = new ArrayList<>();
@@ -58,27 +60,27 @@ public class ComplianceCalculator {
     }
 
     private static void printToFile(List<Conformidade> empresasConformidade, List<Conformidade> empresasNaoConformidade, String referenceYear) throws IOException {
-        BufferedWriter writerConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmConformidade"+referenceYear+".txt"));
-        writerConformidade.write("Empresa;Conformidade;");
-        writerConformidade.newLine();
-
-        empresasNaoConformidade = empresasNaoConformidade.stream().distinct().toList();
-        empresasConformidade = empresasConformidade.stream().distinct().toList();
-
-        for (Conformidade conformidade : empresasConformidade) {
-            writerConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidade() + ";");
+        try (BufferedWriter writerConformidade = new BufferedWriter(new FileWriter(EXPORT_PATH + "EmpresasEmConformidade" + referenceYear + ".txt"))) {
+            writerConformidade.write("Empresa;Conformidade;");
             writerConformidade.newLine();
+
+            empresasNaoConformidade = empresasNaoConformidade.stream().distinct().toList();
+            empresasConformidade = empresasConformidade.stream().distinct().toList();
+
+            for (Conformidade conformidade : empresasConformidade) {
+                writerConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidadeStatus() + ";");
+                writerConformidade.newLine();
+            }
         }
-        writerConformidade.close();
 
-        BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmNaoConformidade"+referenceYear+".txt"));
-        writerNaoConformidade.write("Empresa;Conformidade;");
-        writerNaoConformidade.newLine();
-
-        for (Conformidade conformidade : empresasNaoConformidade) {
-            writerNaoConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidade() + ";");
+        try (BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(EXPORT_PATH + "EmpresasEmNaoConformidade" + referenceYear + ".txt"))) {
+            writerNaoConformidade.write("Empresa;Conformidade;");
             writerNaoConformidade.newLine();
+
+            for (Conformidade conformidade : empresasNaoConformidade) {
+                writerNaoConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidadeStatus() + ";");
+                writerNaoConformidade.newLine();
+            }
         }
-        writerNaoConformidade.close();
     }
 }

@@ -2,27 +2,19 @@ package com.carara.model;
 
 public class Conformidade {
     private String empresa;
-    private String conformidade;
+    private String conformidadeStatus;
 
     public Conformidade(String empresa, String conformidade) {
         this.empresa = empresa;
-        this.conformidade = conformidade;
+        this.conformidadeStatus = conformidade;
     }
 
     public String getEmpresa() {
         return empresa;
     }
 
-    public void setEmpresa(String empresa) {
-        this.empresa = empresa;
-    }
-
-    public String getConformidade() {
-        return conformidade;
-    }
-
-    public void setConformidade(String conformidade) {
-        this.conformidade = conformidade;
+    public String getConformidadeStatus() {
+        return conformidadeStatus;
     }
 
     @Override

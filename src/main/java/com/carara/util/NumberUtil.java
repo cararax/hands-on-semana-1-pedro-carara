@@ -12,4 +12,7 @@ public class NumberUtil {
         NumberFormat numberFormatter = NumberFormat.getNumberInstance(Locale.forLanguageTag("pt-BR"));
         return numberFormatter.parse(number).doubleValue();
     }
+
+    private NumberUtil() {
+    }
 }
