@@ -1,0 +1,1 @@
+Para rodar use Java 19 e rode a classe Main.java
