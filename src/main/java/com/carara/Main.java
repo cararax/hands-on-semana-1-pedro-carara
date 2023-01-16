@@ -1,36 +1,35 @@
 package com.carara;
 
-import com.carara.model.Faturamento;
-import com.carara.model.Nota;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
-import static com.carara.calculator.ComplianceCalculator.calculateComliance;
-import static com.carara.reader.FileReader.faturamentoReader;
-import static com.carara.reader.FileReader.notaReader;
+import static com.carara.calculator.ComplianceCalculator.calculateCompliance;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        String isContinue = null;
+        Integer referenceYear = null;
+        Scanner scanner = new Scanner(System.in);
+        do {
+            try {
+                System.out.println("Informe o ano fiscal de referencia para consultar e gerar os arquivos:");
+                referenceYear = scanner.nextInt();
+                if (referenceYear > 2022) {
+                    System.out.println("Ano fiscal de referencia invalido");
+                } else {
+                    calculateCompliance(referenceYear);
+                    System.out.println("Relatorio gerado e disponível na pasta export.");
+                }
+                System.out.println("Deseja gerar o relatório novamente? SIM ou NAO");
+                isContinue = scanner.next();
 
-//        ArrayList<Faturamento> faturamentoList = new ArrayList<>();
-        List<Nota> notaList = new ArrayList<>();
-        List<Faturamento> faturamentoList = new ArrayList<>();
-
-        faturamentoList = faturamentoReader(faturamentoList, 2022);
-        notaList = notaReader(notaList, 2022);
-//        complianceCalculator(faturamentoList, notaList);
-        for(Faturamento faturamento : faturamentoList){
-            System.out.println(faturamento.getAno());
-        }
-        for(Nota nota : notaList){
-            System.out.println(nota.getAno());
-        }
-
-        calculateComliance(faturamentoList, notaList);
+            } catch (Exception exception) {
+                System.out.println(exception.getMessage());
+            }
+        } while (isContinue.equalsIgnoreCase("SIM"));
+        System.out.println("Fim do programa.");
 
     }
 }
