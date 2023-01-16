@@ -51,7 +51,7 @@ public class ComplianceCalculator {
             if (valorTotalNotas.equals(valorTotalFaturamento)) {
                 empresasConformidade.add(new Conformidade(empresa, "EM CONFORMIDADE"));
             } else {
-                empresasNaoConformidade.add(new Conformidade(empresa, "EM CONFORMIDADE"));
+                empresasNaoConformidade.add(new Conformidade(empresa, "EM NÃO CONFORMIDADE"));
             }
         }
         printToFile(empresasConformidade, empresasNaoConformidade, String.valueOf(referenceYear));
@@ -62,18 +62,23 @@ public class ComplianceCalculator {
         writerConformidade.write("Empresa;Conformidade;");
         writerConformidade.newLine();
 
+        empresasNaoConformidade = empresasNaoConformidade.stream().distinct().toList();
+        empresasConformidade = empresasConformidade.stream().distinct().toList();
+
         for (Conformidade conformidade : empresasConformidade) {
             writerConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidade() + ";");
             writerConformidade.newLine();
         }
+        writerConformidade.close();
 
         BufferedWriter writerNaoConformidade = new BufferedWriter(new FileWriter(basePath + "EmpresasEmNaoConformidade"+referenceYear+".txt"));
         writerNaoConformidade.write("Empresa;Conformidade;");
         writerNaoConformidade.newLine();
 
         for (Conformidade conformidade : empresasNaoConformidade) {
-            writerConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidade() + ";");
-            writerConformidade.newLine();
+            writerNaoConformidade.write(conformidade.getEmpresa() + ";" + conformidade.getConformidade() + ";");
+            writerNaoConformidade.newLine();
         }
+        writerNaoConformidade.close();
     }
 }

@@ -24,4 +24,19 @@ public class Conformidade {
     public void setConformidade(String conformidade) {
         this.conformidade = conformidade;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Conformidade that = (Conformidade) o;
+
+        return empresa.equals(that.empresa);
+    }
+
+    @Override
+    public int hashCode() {
+        return empresa.hashCode();
+    }
 }
